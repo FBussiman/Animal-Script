@@ -1,0 +1,35 @@
+#Renumf90
+DATAFILE
+Phen.txt
+TRAITS
+9
+FIELDS_PASSED TO OUTPUT
+
+WEIGHT(S)
+
+RESIDUAL_VARIANCE
+1
+EFFECT
+2 cross alpha
+EFFECT
+3 cross alpha
+EFFECT
+4 cross alpha
+EFFECT
+5 cross alpha
+EFFECT
+7 cov
+EFFECT
+8 cov
+EFFECT
+1 cross alpha
+RANDOM
+animal
+FILE
+Ped.txt
+PED_DEPTH
+0
+(CO)VARIANCES
+1
+OPTION solution all 5
+OPTION solution mean 1 2 3 4 5 6 7
