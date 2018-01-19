@@ -1,0 +1,221 @@
+setwd("C:/Users/FernandodeOliveira/Desktop/Gráficos Animal")
+rm(list = ls()) 
+
+library(ggplot2)
+library(plotly)
+library(gridExtra)
+library(grid)
+  
+data <- read.table("DadosFigura1A.txt",header = T)
+data_2 <- read.table("meanCOMP.txt",header = F)
+  
+names(data_2) <- c("Generation","Completness")
+  
+data_2$Completness <- data_2$Completness*100
+  
+tiff("Figure1.tiff",width = 10,height = 5,
+     units = "in",res = 800)
+    
+A <- ggplot()+ 
+    
+  geom_line(data=data[data$Variable == "Number_of_Born_Animals",],
+            aes(Year,Value,colour=Variable),size = 0.5)+
+    
+  geom_line(data=data[data$Variable == "Number_of_selected_Offsprings",],
+            aes(Year,Value,colour=Variable),size = 0.5,linetype = 2)+
+    
+  geom_line(data=data[data$Variable == "Number_of_Sires",],
+            aes(Year,Value,colour=Variable),size = 0.5,linetype = 2)+
+    
+  theme_classic() + labs(x = "Years",
+                         y = "Number of Animals")+
+    
+  scale_x_continuous(breaks = c(1948,1955,1962,
+                                1968,1975,1982,
+                                1989,1996,2002,
+                                2009,2016))+
+    
+  theme(axis.title=element_text(face="bold",
+                                size=10, color="black"))+
+  theme(axis.text.x = element_text(face="bold",
+                                   color="black",size=10))+
+  theme(axis.text.y = element_text(face="bold",
+                                   color="black",size=10))+
+    
+  ggtitle("A") + theme(plot.title = element_text(face="bold",
+                                                 color="black",size=11))+
+    
+  theme(plot.title = element_text(hjust = 0, vjust = 0))+
+    
+  scale_color_manual(labels = c("Number of born animals",
+                                "Number of selected offsprings",
+                                "Number of used sires"),
+                     values = c("black","#666666","gray"))+
+    
+  theme(legend.justification = "top",             
+        legend.position = c(0.85,1),              
+        legend.title = element_blank(),           
+        legend.text = element_text(face="italic", 
+                                   color="black",size=10))
+
+B <- ggplot()+
+  geom_line(data=data_2,aes(Generation,Completness),
+            size=0.5,col="black")+
+  theme_classic() + labs(x = "Generation",
+                         y = "Proportion of ancestors known")+
+  scale_x_continuous(breaks = c(0:14))+
+  theme(axis.title=element_text(face="bold",
+                                size=10, color="black"))+
+  theme(axis.text.x = element_text(face="bold",
+                                   color="black",size=10))+
+  theme(axis.text.y = element_text(face="bold",
+                                   color="black",size=10))+
+  ggtitle("B") + theme(plot.title = element_text(face="bold",
+                                                 color="black",size=11))+
+  theme(plot.title = element_text(hjust = 0, vjust = 0))
+
+grid.arrange(A,B,ncol=1)
+
+dev.off()
+
+rm(list = ls())
+dados <- read.table("Fig2B.txt",h=T)
+head(dados)
+str(dados)
+dados <- dados[-which(dados$Year < 1950),]
+head(dados)
+dados <- dados[-which(is.na(dados$Value)),]
+head(dados)
+dados2 <- read.table("Fig2A.txt",h=T)
+head(dados2)
+
+tiff("Figure2.tiff",width = 10,height = 5,
+     units = "in",res = 800)
+A <- ggplot(dados2,aes(x = Year))+
+  geom_line(data=dados2[dados2$Variable == "Average",],
+            aes(y = Value),size = 0.5)+
+  theme_classic() + labs(x = "Years",
+                         y = "Generation interval (years)")+
+  scale_x_continuous(breaks = c(1957,1963,1968,1974,1979,
+                                1985,1990,1996,2001,2007,
+                                2012))+
+  theme(axis.title=element_text(face="bold",
+                                size=10, color="black"))+
+  theme(axis.text.x = element_text(face="bold",
+                                   color="black",size=10))+
+  theme(axis.text.y = element_text(face="bold",
+                                   color="black",size=10))+
+  ggtitle("A") + theme(plot.title = element_text(face="bold",
+                                                 color="black",size=11))
+B <- ggplot(dados,aes(x = Year))+ 
+  
+  geom_line(data=dados[dados$Variable == "Ne_deltaF",],
+            aes(y = Value,colour=Variable),size = 0.5)+
+  
+  geom_line(data=dados[dados$Variable == "Ne_parents",],
+            aes(y = Value,colour=Variable),size = 0.5,linetype = 2)+
+  
+  geom_line(data=dados[dados$Variable == "DeltaF",],
+            aes(y = Value*490196.1,colour=Variable),size = 0.5,linetype = 2)+
+  
+  scale_y_continuous(sec.axis = sec_axis(~./490196.1,
+                                         name = expression(paste(Delta,italic(F)))))+
+   
+  theme_classic() + labs(x = "Years",
+                         y = "Number of Animals")+
+  
+  scale_x_continuous(breaks = c(1950,1957,1963,1970,
+                                1976,1983,1990,1996,
+                                2003,2009,2016))+
+  
+  theme(axis.title=element_text(face="bold",
+                                size=10, color="black"))+
+  theme(axis.text.x = element_text(face="bold",
+                                   color="black",size=10))+
+  theme(axis.text.y = element_text(face="bold",
+                                   color="black",size=10))+
+  
+  ggtitle("B") + theme(plot.title = element_text(face="bold",
+                                                 color="black",size=11))+
+  
+  theme(plot.title = element_text(hjust = 0, vjust = 0))+
+  
+  scale_color_manual(labels = c(expression(paste(Delta,italic(F))),
+                                expression(paste(italic(N)[e],Delta,italic(F))),
+                                expression(paste(italic(N)[e],
+                                                 italic("(number of parents)")))),
+                     values = c("#666666","black","gray"))+
+  
+  theme(legend.justification = "top",             
+        legend.position = c(0.11,1),              
+        legend.title = element_blank(),          
+        legend.text = element_text(face="italic",
+                                   color="black",size=10))
+grid.arrange(A,B,ncol=1)
+dev.off()
+
+rm(list = ls())
+dados <- read.table("Fig3A.txt",h=T)
+dados2 <- read.table("Fig3B.txt",h=T)
+dados2 <- dados2[-which(dados2$Year<1950),]
+
+tiff("Figure3.tiff",width = 10,height = 5,
+     units = "in",res = 800)
+A <- ggplot()+
+  geom_line(data=dados,aes(Year,Coancestry),size = 0.5)+
+  theme_classic() + labs(x = "Years",
+                         y = "Average Coancestry")+
+  scale_x_continuous(breaks = c(1950,1957,1963,1970,1976,
+                                1983,1990,1996,2003,2009,
+                                2016))+
+  theme(axis.title=element_text(face="bold",
+                                size=10, color="black"))+
+  theme(axis.text.x = element_text(face="bold",
+                                   color="black",size=10))+
+  theme(axis.text.y = element_text(face="bold",
+                                   color="black",size=10))+
+  ggtitle("A") + theme(plot.title = element_text(face="bold",
+                                                 color="black",size=11))
+
+B <- ggplot()+ 
+  
+  geom_line(data=dados2[dados2$Variable == "DamF",],
+            aes(Year,Value,colour=Variable),size = 0.5,linetype = 2)+
+  
+  geom_line(data=dados2[dados2$Variable == "SireF",],
+            aes(Year,Value,colour=Variable),size = 0.5,linetype = 2)+
+  
+  geom_line(data=dados2[dados2$Variable == "Average",],
+            aes(Year,Value,colour=Variable),size = 0.5,linetype = 1)+
+  
+  theme_classic() + labs(x = "Years",
+                         y = "Imbreeding Coefficient")+
+  
+  scale_x_continuous(breaks = c(1950,1957,1963,1970,1976,
+                                1983,1990,1996,2003,2009,
+                                2016))+
+  
+  theme(axis.title=element_text(face="bold",
+                                size=10, color="black"))+
+  theme(axis.text.x = element_text(face="bold",
+                                   color="black",size=10))+
+  theme(axis.text.y = element_text(face="bold",
+                                   color="black",size=10))+
+  
+  ggtitle("B") + theme(plot.title = element_text(face="bold",
+                                                 color="black",size=11))+
+  
+  theme(plot.title = element_text(hjust = 0, vjust = 0))+
+  
+  scale_color_manual(labels = c("Average Inbreeding Coefficient",
+                                "Average Paternal Inbreeding",
+                                "Average Maternal Inbreeding"),
+                     values = c("black","#666666","gray"))+
+  
+  theme(legend.justification = "top",             
+        legend.position = c(0.15,1),              
+        legend.title = element_blank(),           
+        legend.text = element_text(face="italic", 
+                                   color="black",size=10))
+grid.arrange(A,B,ncol=1)
+dev.off()
