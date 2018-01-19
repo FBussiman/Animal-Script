@@ -1,0 +1,27 @@
+########################################################################################################################
+############################# This script create the imput file for PopReport Analyses #################################
+########################################################################################################################
+# setting the work directory
+setwd("C:/Users/Fernando/Desktop/Animal")
+
+# importing the pedigree file (h=T is for headers in the file)
+ped <- read.table("PedC.txt",h=T)
+
+# good practices in R
+head(ped) # verifying the 6 first lines of the imported file
+str(ped) # verifying the structure of the data
+
+# changing the columm DATE (the format here is the format of the data)
+ped$DATE <- as.Date(ped$DATE,"%d/%m/%Y") 
+str(ped) # verifying if its works
+
+# changing the columms Sire and Dam, where is 0 to unknown_sire and unknown_dam, respectively
+ped$SIRE[ped$SIRE == 0] <- "unknown_sire"
+ped$DAM[ped$DAM == 0] <- "unknown_dam"
+head(ped) # verifying if its works
+
+# writing the data in the correct format for PopReport
+write.table(ped,"Ped.txt",col.names = F,row.names = F,quote = F,sep = "|")
+########################################################################################################################
+#################################################### End of work #######################################################
+########################################################################################################################
